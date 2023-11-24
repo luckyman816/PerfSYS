@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { useRef } from 'react';
+import {  Navigate } from 'react-router-dom';
 // material-ui
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import {
-  Avatar,
   Box,
   ButtonBase,
 } from '@mui/material';
 import { connect } from 'react-redux';
 import { logout } from 'actions/auth';
 // assets
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, } from '@ant-design/icons';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -30,10 +29,11 @@ TabPanel.propTypes = {
 
 const Profile = ({auth: { isAuthenticated }, logout }) => {
   const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+  const open = false;
+  // const [open, setOpen] = useState(false);
+  // const handleToggle = () => {
+  //   setOpen((prevOpen) => !prevOpen);
+  // };
 
   const iconBackColorOpen = 'grey.300';
   if(!isAuthenticated){

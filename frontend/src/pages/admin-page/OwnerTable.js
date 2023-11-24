@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PlaylistAddCircleIcon from '@mui/icons-material/PlaylistAddCircle';
-import { Grid, Button, Typography, TextField } from '@mui/material';
+import { Grid, Button,  TextField } from '@mui/material';
 export default function OwnerTable() {
   const [checked, setChecked] = React.useState([0]);
 

@@ -1,5 +1,5 @@
 // material-ui
-import { Box, IconButton, Link, useMediaQuery } from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 // project import
 import Search from './Search';
 import Profile from './Profile';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import OrderTable from './OrdersTable';
 import AddNew from './AddNew';
 // material-ui
-import { Grid, Button, Typography } from '@mui/material';
+import { Grid,  } from '@mui/material';
 import MainCard from 'components/MainCard';
 // ==============================|| CUSTOMER PAGE ||============================== //
 const DashboardDefault = () => {

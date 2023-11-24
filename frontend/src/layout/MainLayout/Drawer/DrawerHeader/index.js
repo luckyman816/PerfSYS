@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Stack, Chip } from '@mui/material';
+import { Stack } from '@mui/material';
 
 // project import
 import DrawerHeaderStyled from './DrawerHeaderStyled';
@@ -18,7 +18,7 @@ const DrawerHeader = ({ open }) => {
     <DrawerHeaderStyled theme={theme} open={open}>
       <Stack direction="row" spacing={1} alignItems="center">
         <Logo />
-        <h3 style={{fontFamily: "serif", fontSize: "25px", color: "rgb(0 170 250)"}}>Perf SYS</h3>
+        <h3 style={{ fontFamily: 'serif', fontSize: '25px', color: 'rgb(0 170 250)' }}>Perf SYS</h3>
       </Stack>
     </DrawerHeaderStyled>
   );

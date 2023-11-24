@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { format } from 'date-fns';
+import { Link as RouterLink,  } from 'react-router-dom';
+// import { format } from 'date-fns';
 import ShowAddDialog from './ShowAddDialog';
 // material-ui
-import { Box, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Button } from '@mui/material';
+import { Box, Link,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Button } from '@mui/material';
 // third-party
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 // project import
 
 const deleteletter = 'Do you really delete this item?';
-const updateletter = 'Do you really update this item?';
+// const updateletter = 'Do you really update this item?';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -181,7 +181,7 @@ const showData = (orders, order_h, orderBy , isSelected, handleClickOpen_d) => {
   }
   return(
     orders.length > 0 &&
-    stableSort(orders, getComparator(order_h, orderBy))?.map((order) => {
+    stableSort(orders, getComparator(order_h, orderBy))?.map((order, key) => {
       const isItemSelected = isSelected(order.orderPO);
       return (
         <TableRow
@@ -190,6 +190,7 @@ const showData = (orders, order_h, orderBy , isSelected, handleClickOpen_d) => {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
           aria-checked={isItemSelected}
           tabIndex={-1}
+          key={key}
           id={order._id}
           selected={isItemSelected}
         >
@@ -208,7 +209,7 @@ const showData = (orders, order_h, orderBy , isSelected, handleClickOpen_d) => {
               color="error"
               style={{ marginRight: '5px' }}
               startIcon={<DeleteIcon />}
-              onClick={(e) => handleClickOpen_d(order._id)}
+              onClick={() => handleClickOpen_d(order._id)}
             >
               DELETE
             </Button>
