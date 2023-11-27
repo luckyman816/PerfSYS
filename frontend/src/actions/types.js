@@ -18,7 +18,9 @@ export const PROFILE_ERROR = 'PROFILE_ERROR';
 export const ACCOUNT_DELETED = 'ACCOUNT_DELETED';
 
 export const GET_ORDERS = 'GET_ORDERS';
+export const GET_ORDERS_HISTORY = 'GET_ORDERS_HISTORY';
 export const GET_ORDER = 'GET_ORDER';
+export const GET_ORDER_HISTORY = 'GET_ORDER_HISTORY';
 export const ORDER_ERROR = 'ORDER_ERROR';
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const DELETE_ORDER = 'DELETE_ORDER';

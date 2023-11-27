@@ -1,13 +1,6 @@
 import api from '../utils/api';
 import { setAlert } from './alert';
-import {
-  GET_ORDERS,
-  ORDER_ERROR,
-  UPDATE_ORDER,
-  DELETE_ORDER,
-  ADD_ORDER,
-  GET_ORDER,
-} from './types';
+import { GET_ORDERS, ORDER_ERROR, UPDATE_ORDER, DELETE_ORDER, ADD_ORDER, GET_ORDER } from './types';
 
 /*
   NOTE: we don't need a config object for axios as the
@@ -34,13 +27,15 @@ export const getOrders = (id) => async (dispatch) => {
 };
 
 // Add like
-export const updateOrder = (id) => async (dispatch) => {
+export const updateOrder = (id, formData) => async (dispatch) => {
   try {
-    const res = await api.put(`/posts/like/${id}`);
+
+    console.log('---------------------------bbb', id, formData);
+    const res = await api.put(`/order/${id}`, formData);
 
     dispatch({
       type: UPDATE_ORDER,
-      payload: { id, likes: res.data }
+      payload: res.data
     });
   } catch (err) {
     dispatch({
@@ -103,4 +98,3 @@ export const getOrder = (id) => async (dispatch) => {
     });
   }
 };
-

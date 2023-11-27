@@ -2,17 +2,23 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Link as RouterLink,  } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 // import { format } from 'date-fns';
 import ShowAddDialog from './ShowAddDialog';
+import ShowHistoryDialog from './ShowHistoryDialog';
+import ShowUpdateDialog from './ShowUpdateDialog';
 // material-ui
-import { Box, Link,  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,  Button } from '@mui/material';
+import { Box, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip } from '@mui/material';
 // third-party
 import DeleteIcon from '@mui/icons-material/Delete';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getOrders } from 'actions/order';
+import { getOrdersHistory } from 'actions/order_history';
 import { deleteOrder } from 'actions/order';
 import { useSelector } from 'react-redux';
+import { updateOrder } from 'actions/order';
+
 // project import
 
 const deleteletter = 'Do you really delete this item?';
@@ -33,7 +39,6 @@ function getComparator(order_h, orderBy) {
 }
 
 function stableSort(array, comparator) {
-  
   const stabilizedThis = array?.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order_h = comparator(a[0], b[0]);
@@ -113,28 +118,78 @@ OrderTableHead.propTypes = {
 };
 
 // ==============================|| ORDER TABLE ||============================== //
-const OrderTable = ({ getOrders, deleteOrder, order: { orders } }) => {
+const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) => {
   const [open_d, setOpen_d] = React.useState(false);
+  const [open_h, setOpen_h] = React.useState(false);
+  const [open_u, setOpen_u] = React.useState(false);
+  const [updateId, setUpdateId] = React.useState('');
+
   const [orderID, setOrderID] = React.useState();
-   const handleClickOpen_d = (orderID) => {
-     setOpen_d(true);
-     setOrderID(orderID);
-     console.log("aaa________", orderID)
-   };
-   const handleClose_d = () => {
-     setOpen_d(false);
-   };
+  const [orderHistory, setOrderHistory] = React.useState();
+  const [orders, setOrders] = React.useState([]);
+  const handleClickOpen_d = (orderID) => {
+    setOpen_d(true);
+    setOrderID(orderID);
+    // console.log('aaa________', orderID);
+  };
+  const handleClickOpen_h = (orderID) => {
+    setOpen_h(true);
+    // setOrderID(orderID);
+    console.log('aaa________', orderID);
+  };
+  const handleClickOpen_u = (orderID) => {
+    setUpdateId(orderID);
+    setOpen_u(true);
+    // setOrderID(orderID);
+    console.log('aaa________', orderID);
+  };
+
+  const handleClose_d = () => {
+    setOpen_d(false);
+  };
+  const handleClose_h = () => {
+    setOpen_h(false);
+  };
+  const handleClose_u = () => {
+    setOpen_u(false);
+  };
+
   const userID = useSelector((state) => state.auth.user);
+  const ordershistory = useSelector((state) => state.ordershistory.orders_history);
+  const orders_state = useSelector((state) => state.order.orders);
+
+  const onClickTableRow = async (id) => {
+    console.log('------', id);
+    await getOrdersHistory(id);
+    // setOrderHistory(ordershistory);
+
+    handleClickOpen_h(id);
+  };
+
   useEffect(() => {
-    if(userID && userID.user){
+    if (ordershistory) {
+      // console.log('xxxxxxxxxxxxxxx', orderHistory);
+      setOrderHistory(ordershistory);
+    }
+  }, [ordershistory]);
+
+  useEffect(() => {
+    if (orders_state) {
+      console.log('xxxxxxxxxxxxxxx', orders_state);
+      setOrders(orders_state);
+    }
+  }, [orders_state, updateOrder]);
+
+  useEffect(() => {
+    if (userID && userID.user) {
       getOrders(userID.user._id);
     }
-  }, [getOrders, userID]);
-  console.log('aaaaaaaaa', orders);
+  }, [getOrders, userID, updateOrder]);
+  // console.log('aaaaaaaaa', orders);
   const handleOk = () => {
     deleteOrder(orderID);
     handleClose_d();
-  }
+  };
   /************Table part**************/
   const [order_h] = useState('asc');
   const [orderBy] = useState('trackingNo');
@@ -167,69 +222,86 @@ const OrderTable = ({ getOrders, deleteOrder, order: { orders } }) => {
         >
           <OrderTableHead order_h={order_h} orderBy={orderBy} />
           <TableBody>
-            {showData(orders, order_h, orderBy, isSelected, handleClickOpen_d)}
+            {Array.isArray(orders) &&
+              orders.length > 0 &&
+              stableSort(orders, getComparator(order_h, orderBy))?.map((order, key) => {
+                const isItemSelected = isSelected(order.orderPO);
+                return (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={key}
+                    id={order._id}
+                    selected={isItemSelected}
+                  >
+                    <TableCell component="th" scope="row" align="center">
+                      <Link color="secondary" component={RouterLink} to="">
+                        {order.orderPO}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="center">{order.factory}</TableCell>
+                    <TableCell align="center">{order.customer}</TableCell>
+                    <TableCell align="center">{order.completionDate?.split('T')[0]}</TableCell>
+                    <TableCell align="center">{order.readyDate?.split('T')[0]}</TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Order History">
+                        <IconButton color="primary" onClick={() => onClickTableRow(order._id)}>
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Update Order">
+                        <IconButton color="primary" onClick={() => handleClickOpen_u(order._id)}>
+                          <BorderColorIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Order">
+                        <IconButton color="error" onClick={() => handleClickOpen_d(order._id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
-      <ShowAddDialog open={open_d} handleClickOpen={handleClickOpen_d} handleClose={handleClose_d} content={deleteletter} handleOk={handleOk} />
+      <ShowAddDialog
+        open={open_d}
+        handleClickOpen={handleClickOpen_d}
+        handleClose={handleClose_d}
+        content={deleteletter}
+        handleOk={handleOk}
+      />
+      <ShowHistoryDialog
+        open={open_h}
+        data={orderHistory}
+        handleClickOpen={handleClickOpen_h}
+        handleClose={handleClose_h}
+        content={deleteletter}
+      />
+      <ShowUpdateDialog
+        open={open_u}
+        id={updateId}
+        updateOrder={updateOrder}
+        handleClickOpen={handleClickOpen_u}
+        handleClose={handleClose_u}
+        content={deleteletter}
+      />
     </Box>
   );
 };
-const showData = (orders, order_h, orderBy , isSelected, handleClickOpen_d) => {
-  if(!Array.isArray(orders)){
-    return null;
-  }
-  return(
-    orders.length > 0 &&
-    stableSort(orders, getComparator(order_h, orderBy))?.map((order, key) => {
-      const isItemSelected = isSelected(order.orderPO);
-      return (
-        <TableRow
-          hover
-          role="checkbox"
-          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          aria-checked={isItemSelected}
-          tabIndex={-1}
-          key={key}
-          id={order._id}
-          selected={isItemSelected}
-        >
-          <TableCell component="th"scope="row" align="center">
-            <Link color="secondary" component={RouterLink} to="">
-              {order.orderPO}
-            </Link>
-          </TableCell>
-          <TableCell align="center">{order.factory}</TableCell>
-          <TableCell align="center">{order.customer}</TableCell>
-          <TableCell align="center">{order.completionDate}</TableCell>
-          <TableCell align="center">{order.readyDate}</TableCell>
-          <TableCell align="center">
-            <Button
-              variant="contained"
-              color="error"
-              style={{ marginRight: '5px' }}
-              startIcon={<DeleteIcon />}
-              onClick={() => handleClickOpen_d(order._id)}
-            >
-              DELETE
-            </Button>
-  
-            <Button variant="contained" startIcon={<BorderColorIcon />}>
-              UPDATE
-            </Button>
-          </TableCell>
-        </TableRow>
-      );
-    })
-  )
-}
-
 OrderTable.propTypes = {
   getOrders: PropTypes.func.isRequired,
   deleteOrder: PropTypes.func.isRequired,
+  getOrdersHistory: PropTypes.func.isRequired,
+  updateOrder: PropTypes.func.isRequired,
   order: PropTypes.object.isRequired
 };
 const mapStateToProps = (state) => ({
   order: state.order
 });
-export default connect(mapStateToProps, { getOrders, deleteOrder })(OrderTable);
+export default connect(mapStateToProps, { getOrders, getOrdersHistory, deleteOrder, updateOrder })(OrderTable);
