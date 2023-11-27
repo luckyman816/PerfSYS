@@ -13,7 +13,7 @@ import { GET_ORDERS, ORDER_ERROR, UPDATE_ORDER, DELETE_ORDER, ADD_ORDER, GET_ORD
 export const getOrders = (id) => async (dispatch) => {
   try {
     const res = await api.get(`order/${id}`);
-
+    console.log('----------------response get', res.data);
     dispatch({
       type: GET_ORDERS,
       payload: res.data
@@ -30,9 +30,8 @@ export const getOrders = (id) => async (dispatch) => {
 export const updateOrder = (id, formData) => async (dispatch) => {
   try {
 
-    console.log('---------------------------bbb', id, formData);
     const res = await api.put(`/order/${id}`, formData);
-
+    console.log('--------------------------response update', res.data);
     dispatch({
       type: UPDATE_ORDER,
       payload: res.data

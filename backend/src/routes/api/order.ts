@@ -97,7 +97,8 @@ router.get(
 router.put("/:orderId", auth, async (req: AuthRequest, res: Response) => {
   const order = await Order.findById(req.params.orderId);
   const updateOrder = {
-    orderPO: req.body.orderPO,
+    _id: req.params.orderId,
+    orderPO: order.orderPO,
     factory: req.body.factory,
     customer: req.body.customer,
     completionDate: req.body.completionDate,
@@ -108,7 +109,7 @@ router.put("/:orderId", auth, async (req: AuthRequest, res: Response) => {
       { _id: new mongoose.Types.ObjectId(req.params.orderId) },
       updateOrder
     );
-    return res.json({ msg: "Order has been updated successfully!" });
+    return res.json(updateOrder);
   } else {
     return res.json({ msg: "Not found!" });
   }

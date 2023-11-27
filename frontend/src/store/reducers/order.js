@@ -44,7 +44,8 @@ function orderReducer(state = initialState, action) {
     case UPDATE_ORDER:
       return {
         ...state,
-        orders: state.orders.map((order) => (order._id === payload.id ? { order: payload } : order)),
+       orders: state.orders.map((order) => (order._id == payload._id ? payload : order)),
+        // orders: payload,
         loading: false
       };
     default:
