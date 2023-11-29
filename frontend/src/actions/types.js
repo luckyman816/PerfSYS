@@ -7,6 +7,7 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGOUT = 'LOGOUT';
+export const GET_USERS = 'GET_USERS'
 
 export const GET_PROFILE = 'GET_PROFILE';
 export const GET_PROFILES = 'GET_PROFILES';
@@ -16,6 +17,21 @@ export const UPDATE_PROFILE = 'UPDATE_PROFILE';
 export const CLEAR_PROFILE = 'CLEAR_PROFILE';
 export const PROFILE_ERROR = 'PROFILE_ERROR';
 export const ACCOUNT_DELETED = 'ACCOUNT_DELETED';
+
+export const GET_FACTORIES = 'GET_FACTORIES';
+export const DELETE_FACTORY = 'DELETE_FACTORY';
+export const ADD_FACTORY = 'ADD_FACTORY';
+export const FACTORY_ERROR = 'FACTORY_ERROR';
+
+export const GET_CUSTOMERS = 'GET_CUSTOMERS';
+export const DELETE_CUSTOMER = 'DELETE_CUSTOMER';
+export const ADD_CUSTOMER = 'ADD_CUSTOMER';
+export const CUSTOMER_ERROR = 'CUSTOMER_ERROR';
+
+export const GET_ONWERS = 'GET_ONWERS';
+export const DELETE_ONWER = 'DELETE_ONWER';
+export const ADD_OWNER = 'ADD_OWNER';
+export const OWNER_ERR = 'OWNER_ERR';
 
 export const GET_ORDERS = 'GET_ORDERS';
 export const GET_ORDERS_HISTORY = 'GET_ORDERS_HISTORY';
@@ -28,3 +44,8 @@ export const ADD_ORDER = 'ADD_ORDER';
 
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const REMOVE_COMMENT = 'REMOVE_COMMENT';
+
+export const SUCESS_LOGIN_LETTER = 'Login successfully !';
+export const WARNING_LOGIN_LETTER = 'Your email or password is invalid !';
+export const SUCESS_TYPE = 'success';
+export const WARNING_TYPE = 'warning';

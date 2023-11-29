@@ -1,6 +1,6 @@
 import api from '../utils/api';
 import { setAlert } from './alert';
-import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT } from './types';
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, GET_USERS } from './types';
 /*
   NOTE: we don't need a config object for axios as the
  default headers in axios are already Content-Type: application/json
@@ -14,6 +14,20 @@ export const loadUser = () => async (dispatch) => {
 
     dispatch({
       type: USER_LOADED,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR
+    });
+  }
+};
+export const getUsers = () => async (dispatch) => {
+  try {
+    const res = await api.get('/user/all');
+
+    dispatch({
+      type: GET_USERS,
       payload: res.data
     });
   } catch (err) {
@@ -55,7 +69,7 @@ export const login = (email, password) => async (dispatch) => {
       type: LOGIN_SUCCESS,
       payload: res.data
     });
-
+    setAlert('Order Created', 'success');
     dispatch(loadUser());
   } catch (err) {
     const errors = err.response?.data.errors;

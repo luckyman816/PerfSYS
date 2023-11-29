@@ -2,14 +2,10 @@ import express, { Express } from "express";
 import cors from "cors";
 
 import user from "./routes/api/user";
-// import task from "./routes/api/task";
-// import surveillance from "./routes/api/surveillance";
-// import screenshot from "./routes/api/screenshot";
-// import dailyreport from "./routes/api/bidreport";
-// import projecthistory from "./routes/api/projecthistory";
-// import project from "./routes/api/project";
 import order from "./routes/api/order";
-// import worktime from "./routes/api/worktime";
+import factory from "./routes/api/factory";
+import customer from "./routes/api/customer";
+import owner from "./routes/api/owner";
 import connectDB from "./lib/dbConnect";
 import dotenv from "dotenv";
 
@@ -29,14 +25,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/static", express.static(__dirname + "/public"));
 
 app.use("/api/user", user);
-// app.use("/api/task", task);
-// app.use("/api/worktime", worktime);
-// app.use("/api/surveillance", surveillance);
-// app.use("/api/screenshot", screenshot);
-// app.use("/api/dailyreport", dailyreport);
-// app.use("/api/project_history", projecthistory);
-// app.use("/api/project", project);
-app.use("/api/order", order)
+app.use("/api/order", order);
+app.use("/api/factory", factory);
+app.use("/api/customer", customer);
+app.use("/api/owner", owner);
 app.get("/api/get-suv-version", (req, res) => {
   res.send(
     JSON.stringify({

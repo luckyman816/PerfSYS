@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addOrder } from 'actions/order';
+import { getFactories } from 'actions/factory';
+import { getCustomers } from 'actions/customer';
+import { getOwners } from 'actions/owner';
 import { Grid, Button,  } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,11 +21,17 @@ import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
-
 import ShowAddDialog from './ShowAddDialog';
+import { useSelector } from 'react-redux';
 
 const addletter = 'Do you really add this items?';
-const AddNew = ({ addOrder }) => {
+const AddNew = ({ addOrder, getFactories, getCustomers, getOwners }) => {
+  const customers_state = useSelector(state => state.customer.customers); // eslint-disable-line
+  const factories_state = useSelector(state => state.factory.factories); // eslint-disable-line
+  const owners_state = useSelector(state => state.owner.owners); // es
+  const [customers, setCustomers] = React.useState(['']); // eslint-disable-line
+  const [factories, setFactories] = React.useState(['']); // eslint-disable-line
+  const [owners, setOwners] = React.useState(['']); // esl
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -47,6 +56,24 @@ const AddNew = ({ addOrder }) => {
     addOrder(formData);
     handleClose();
   }
+  React.useEffect (()=> {
+    getCustomers();
+  }, [getCustomers])
+  React.useEffect (()=> {
+    setCustomers(customers_state);
+  }, [customers_state])
+  React.useEffect (()=> {
+    getFactories();
+  }, [getFactories])
+  React.useEffect (()=> { 
+    setFactories(factories_state);
+  }, [factories_state])
+  React.useEffect (()=> {
+    getOwners(); 
+  }, [getOwners])
+  React.useEffect (()=> {
+    setOwners(owners_state);
+  }, [owners_state])
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75} marginTop="5px">
       <Grid item xs={12} md={12} lg={12}>
@@ -79,9 +106,12 @@ const AddNew = ({ addOrder }) => {
                 label="Select Factory"
                 onChange={handleChange}
               >
-                <MenuItem value="China Factory">China Factory</MenuItem>
-                <MenuItem value="Africa Factory">Africa Factory</MenuItem>
-                <MenuItem value="America Factory">America Factory</MenuItem>
+                {factories.map((factory_it) => {
+                  return(
+                    <MenuItem id={factory_it._id} value={factory_it.factory}>{factory_it.factory}</MenuItem>
+                  )
+                })
+                }
               </Select>
             </FormControl>
           </Grid>
@@ -96,9 +126,12 @@ const AddNew = ({ addOrder }) => {
                 label="Select Customer"
                 onChange={handleChange}
               >
-                <MenuItem value="Martine">Martine</MenuItem>
-                <MenuItem value="YunPeiShaorun">YunPeiShaorun</MenuItem>
-                <MenuItem value="Masahiro"> Masahiro</MenuItem>
+                {customers.map((customer_it) => {
+                  return(
+                    <MenuItem id={customer_it._id} value={customer_it.customer}>{customer_it.customer}</MenuItem>
+                  )
+                })
+                }
               </Select>
             </FormControl>
           </Grid>
@@ -129,5 +162,8 @@ const AddNew = ({ addOrder }) => {
 }
 AddNew.propTypes = {
   addOrder: PropTypes.func.isRequired,
+  getFactories: PropTypes.func.isRequired,
+  getCustomers: PropTypes.func.isRequired,
+  getOwners: PropTypes.func.isRequired
 }
-export default connect(null, { addOrder })(AddNew);
+export default connect(null, { addOrder, getFactories, getCustomers, getOwners })(AddNew);

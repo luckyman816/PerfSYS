@@ -13,7 +13,6 @@ import { GET_ORDERS, ORDER_ERROR, UPDATE_ORDER, DELETE_ORDER, ADD_ORDER, GET_ORD
 export const getOrders = (id) => async (dispatch) => {
   try {
     const res = await api.get(`order/${id}`);
-    console.log('----------------response get', res.data);
     dispatch({
       type: GET_ORDERS,
       payload: res.data
@@ -54,7 +53,7 @@ export const deleteOrder = (id) => async (dispatch) => {
       payload: id
     });
 
-    dispatch(setAlert('Post Removed', 'success'));
+    dispatch(setAlert('Order Removed', 'success'));
   } catch (err) {
     dispatch({
       type: POST_ERROR,
@@ -67,6 +66,7 @@ export const deleteOrder = (id) => async (dispatch) => {
 export const addOrder = (formData) => async (dispatch) => {
   try {
     const res = await api.post('/order/create', formData);
+    console.log("add_new", formData);
     dispatch({
       type: ADD_ORDER,
       payload: res.data

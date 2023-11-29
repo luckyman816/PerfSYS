@@ -6,7 +6,6 @@ import { Grid,  } from '@mui/material';
 import MainCard from 'components/MainCard';
 // ==============================|| CUSTOMER PAGE ||============================== //
 const DashboardDefault = () => {
-  const [open_history, setOpen_history] = React.useState(false);
 
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>

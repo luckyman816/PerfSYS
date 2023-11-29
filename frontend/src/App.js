@@ -5,7 +5,6 @@ import ThemeCustomization from 'themes';
 import ScrollTop from 'components/ScrollTop';
 import { loadUser } from 'actions/auth';
 import setAuthToken from 'utils/setAuthToken';
-import Alert from './layout/Component/alert'
 import store from 'store/index';
 import { Provider } from 'react-redux';
 // ==============================|| APP - THEME, ROUTER, LOCAL  ||============================== //
@@ -30,7 +29,6 @@ const App = () => {
     <Provider store={store}>
       <ThemeCustomization>
         <ScrollTop>
-          <Alert/>
           <Routes />
         </ScrollTop>
       </ThemeCustomization>

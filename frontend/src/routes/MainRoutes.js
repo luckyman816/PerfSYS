@@ -27,10 +27,6 @@ const MainRoutes = {
       element: <AdminPage />
     },
     {
-      path: 'dashboard',
-      element: <DashboardDefault />
-    },
-    {
       path: 'customerManage',
       element: <CustomerPage />
     },

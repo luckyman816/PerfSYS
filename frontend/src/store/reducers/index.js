@@ -6,6 +6,9 @@ import menu from './menu';
 import alert from './alert';
 import auth from './auth';
 import order from './order';
+import factory from './factory';
+import customer from './customer';
+import owner from './owner'
 import ordershistory from './order_history'
 
 // ==============================|| COMBINE REDUCERS ||============================== //
@@ -15,6 +18,9 @@ export default combineReducers({
     alert,
     auth,
     order,
+    factory,
+    customer,
+    owner,
     ordershistory
 });
 

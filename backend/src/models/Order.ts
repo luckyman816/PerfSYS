@@ -26,43 +26,6 @@ const OrderSchema: Schema = new Schema({
     default: Date.now
   }
 });
-
-// async function findBidReportsByGroupId(groupId: number) {
-//   return await BidReport.aggregate([
-//     {
-//       $lookup: {
-//         from: "users",
-//         localField: "userId",
-//         foreignField: "_id",
-//         as: "users",
-//       },
-//     },
-//     {
-//       $match: {
-//         "users.0.groupid": groupId
-//       },
-//     },
-//     {
-//       $project: {
-//         userId: 1,
-//         bidCount: 1,
-//         contactCount: 1,
-//         chatting: 1,
-//         successed: 1,
-//         codeInGame: 1,
-//         workingTime: 1,
-//         other: 1,
-//         reportdate: 1
-//       }
-//     }
-//   ]).sort({ userId: "desc" })
-//     .exec();
-// }
-
 const Order = model("Order", OrderSchema);
 
 export default Order;
-
-// export {
-//   findBidReportsByGroupId
-// }

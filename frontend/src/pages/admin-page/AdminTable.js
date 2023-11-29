@@ -7,6 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'; 
+import { getUsers } from 'actions/auth';
+import { useSelector } from 'react-redux';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "rgb(0 170 250)",
@@ -27,19 +31,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(firstName, lastName, emailAddress, company) {
-  return { firstName, lastName, emailAddress, company };
-}
-
-const rows = [
-  createData('Maicle', 'Velo', 'velo.gmail.com', 24, 4.0),
-  createData('Nicel', 'sben', 'sben.gmail.com', 37, 4.3),
-  createData('Masahiro', 'Yamada', 'yamada.gmail.com', 24, 6.0),
-  createData('Kuala', 'dialo', 'dialo.gmail.com', 67, 4.3),
-  createData('Jone', 'doe', 'doe.gmail.com', 49, 3.9),
-];
-
-export default function AdminTable() {
+const AdminTable = ({getUsers}) => {
+  const users_state = useSelector((state) => state.auth.users);
+  const [users, setUsers] = React.useState([]);
+  React.useEffect(() => {
+    getUsers();
+  },[getUsers])
+  React.useEffect(() => {
+    setUsers(users_state);
+  },[users_state]);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -52,14 +52,14 @@ export default function AdminTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
+          {users.map((user) => (
+            <StyledTableRow key={user._id}>
               <StyledTableCell component="th" scope="row">
-                {row.firstName}
+                {user.firstname}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.lastName}</StyledTableCell>
-              <StyledTableCell align="center">{row.emailAddress}</StyledTableCell>
-              <StyledTableCell align="center">{row.company}</StyledTableCell>
+              <StyledTableCell align="center">{user.lastname}</StyledTableCell>
+              <StyledTableCell align="center">{user.email}</StyledTableCell>
+              <StyledTableCell align="center">{user.company}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
@@ -67,3 +67,7 @@ export default function AdminTable() {
     </TableContainer>
   );
 }
+AdminTable.propTypes = {
+  getUsers: PropTypes.func.isRequired
+};
+export default connect(null, {getUsers})(AdminTable);

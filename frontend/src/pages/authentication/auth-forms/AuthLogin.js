@@ -16,7 +16,7 @@ import {
   Stack,
   Typography
 } from '@mui/material';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 // third party
 import * as Yup from 'yup';
@@ -28,10 +28,10 @@ import AnimateButton from 'components/@extended/AnimateButton';
 // assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { login } from 'actions/auth';
+
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = ( {login, isAuthenticated} ) => {
-  
   const [checked, setChecked] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
@@ -53,9 +53,10 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     login(email, password);
+    
   }
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/adminManage" />;
   }
   return (
     <>
@@ -69,19 +70,6 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
           email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required')
         })}
-        // onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-        //   try {
-
-        //     await login(values.email, values.password );
-
-        //     setStatus({ success: true });
-        //     setSubmitting(false);
-        //   } catch (err) {
-        //     setStatus({ success: false });
-        //     setErrors({ submit: err.message });
-        //     setSubmitting(false);
-        //   }
-        // }}
       >
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
@@ -97,11 +85,6 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
                     placeholder="Enter email address"
                     fullWidth
                   />
-                  {/* {touched.email && errors.email && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.email}
-                    </FormHelperText>
-                  )} */}
                 </Stack>
               </Grid>
               <Grid item xs={12}>
@@ -109,7 +92,6 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
                   <InputLabel htmlFor="password-login">Password</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    // error={Boolean(touched.password && errors.password)}
                     id="-password-login"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
@@ -130,11 +112,6 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
                     }
                     placeholder="Enter password"
                   />
-                  {/* {touched.password && errors.password && (
-                    <FormHelperText error id="standard-weight-helper-text-password-login">
-                      {errors.password}
-                    </FormHelperText>
-                  )} */}
                 </Stack>
               </Grid>
 
@@ -157,11 +134,6 @@ const AuthLogin = ( {login, isAuthenticated} ) => {
                   </Link>
                 </Stack>
               </Grid>
-              {/* {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )} */}
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">

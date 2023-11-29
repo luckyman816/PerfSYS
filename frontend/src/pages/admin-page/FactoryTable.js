@@ -2,18 +2,27 @@ import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-// import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import CommentIcon from '@mui/icons-material/Comment';
 import PlaylistAddCircleIcon from '@mui/icons-material/PlaylistAddCircle';
-import { Grid, Button } from '@mui/material';
-import TextField from '@mui/material/TextField';
-export default function FactoryTable() {
+import { Grid, Button, TextField } from '@mui/material';
+import PropTypes from 'prop-types';
+import { getFactories } from 'actions/factory';
+import { addFactory } from 'actions/factory';
+import { deleteFactory } from 'actions/factory';
+import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
+const FactoryTable = ({getFactories, addFactory, deleteFactory}) => {
+  const factories_state = useSelector(state => state.factory.factories);
+  const [factories, setFactories] = React.useState(['']);
   const [checked, setChecked] = React.useState([0]);
-
+  const [factoryData, setFactoryData] = React.useState({
+    factory: '',
+    location:'',
+    employee: ''
+  });
+  const {factory, location, employee} = factoryData;
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -23,28 +32,42 @@ export default function FactoryTable() {
     } else {
       newChecked.splice(currentIndex, 1);
     }
-
     setChecked(newChecked);
   };
-
+  const handleChange = (e) => setFactoryData({...factoryData, [e.target.name]: e.target.value });
+  
+  const handleClick = () => {
+    console.log("111111111111111111",factoryData)
+    addFactory(factoryData);
+  }
+  const handleDelete = (id) => {
+    deleteFactory(id);
+  }
+  React.useEffect (()=> {
+    getFactories();
+  }, [getFactories])
+  React.useEffect (()=> {
+    setFactories(factories_state);
+  }, [factories_state])
+  
   return (
     <Grid container alignItems="center" justifyContent="space-between">
       <Grid item xs={12} md={12} lg={12}>
         <List sx={{ width: '100%', bgcolor: 'background.paper', maxHeight: '160px', overflow: 'auto' }}>
-          {[0, 1, 2, 3, 4, 5].map((value) => {
-            const labelId = `checkbox-list-label-${value}`;
+          {factories.map((factory_item) => {
+            const labelId = `checkbox-list-label-${factory_item._id}`;
             return (
               <ListItem
-                key={value}
+                key={factory_item}
                 secondaryAction={
-                  <IconButton edge="end" aria-label="comments">
+                  <IconButton edge="end" aria-label="comments" onClick = {(e) => handleDelete(factory_item._id)}>
                     <DeleteIcon />
                   </IconButton>
                 }
                 disablePadding
               >
-                <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                  <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                <ListItemButton role={undefined} onClick={handleToggle(factory_item)} dense>
+                  <ListItemText id={labelId} primary={factory_item.factory} />
                 </ListItemButton>
               </ListItem>
             );
@@ -52,13 +75,19 @@ export default function FactoryTable() {
         </List>
       </Grid>
       <Grid item xs={12} md={8} lg={8}>
-        <TextField id="standard-basic" label="Add Factory" variant="standard" sx={{ margin: '0 5vw 10px 50px' }} />
+        <TextField id="standard-basic" label="Add Factory" type="search"  variant="standard" sx={{ margin: '0 5vw 10px 50px' }} name = 'factory' value = {factory} onChange = {handleChange} />
       </Grid>
       <Grid item xs={12} md={4} lg={4}>
-        <Button variant="contained" color="success" startIcon={<PlaylistAddCircleIcon />}>
+        <Button variant="contained" color="success" onClick={handleClick} startIcon={<PlaylistAddCircleIcon />}>
           Add New
         </Button>
       </Grid>
     </Grid>
   );
 }
+FactoryTable.propTypes = {
+  getFactories: PropTypes.func.isRequired,
+  addFactory: PropTypes.func.isRequired,
+  deleteFactory: PropTypes.func.isRequired
+}
+export default connect(null, {getFactories, addFactory, deleteFactory})(FactoryTable);
