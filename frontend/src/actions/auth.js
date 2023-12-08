@@ -1,6 +1,6 @@
 import api from '../utils/api';
 import { setAlert } from './alert';
-import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, GET_USERS } from './types';
+import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS, LOGIN_FAIL, LOGOUT, GET_USERS, SET_LANGUAGE } from './types';
 /*
   NOTE: we don't need a config object for axios as the
  default headers in axios are already Content-Type: application/json
@@ -11,7 +11,7 @@ import { REGISTER_SUCCESS, REGISTER_FAIL, USER_LOADED, AUTH_ERROR, LOGIN_SUCCESS
 export const loadUser = () => async (dispatch) => {
   try {
     const res = await api.get('/user/auth');
-
+    console.log("-----------loadUser--------------", res.data);
     dispatch({
       type: USER_LOADED,
       payload: res.data
@@ -64,7 +64,6 @@ export const login = (email, password) => async (dispatch) => {
   const body = { email, password };
   try {
     const res = await api.post('/user/login', body);
-    console.log('res.data___', res.data);
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
@@ -81,6 +80,16 @@ export const login = (email, password) => async (dispatch) => {
     dispatch({
       type: LOGIN_FAIL
     });
+  }
+};
+export const setEnvLanguage = (language) => async (dispatch) => {
+  try {
+    dispatch({
+      type: SET_LANGUAGE,
+      payload: language
+    })
+  } catch {
+
   }
 };
 

@@ -15,7 +15,6 @@ import Select from '@mui/material/Select';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import dayjs from 'dayjs';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
@@ -44,13 +43,17 @@ const AddNew = ({ addOrder, getFactories, getCustomers, getOwners }) => {
     orderPO: '',
     factory: '',
     customer: '',
+    owner: '',
     completionDate: '',
-    readyDate: ''
+    readyDate: '',
+    qScore: '',
+    cScore: '',
+    pScore: '',
   });
-  const { orderPO, factory, customer, completionDate, readyDate } = formData;
+  const { orderPO, factory, customer, owner, completionDate, readyDate } = formData;
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handleChange_C = (newValue) => setFormData({ ...formData, completionDate: newValue });
-  const handleChange_R = (newValue) => setFormData({ ...formData, readyDate: newValue });
+  const handleChange_R = (newValue) => setFormData({ ...formData, readyDate:  newValue });
   const handleOk = (e) => {
     e.preventDefault();
     addOrder(formData);
@@ -135,6 +138,26 @@ const AddNew = ({ addOrder, getFactories, getCustomers, getOwners }) => {
               </Select>
             </FormControl>
           </Grid>
+          <Grid item xs={12} md={1} lg={1}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Select owner</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="owner"
+                value={owner}
+                label="Select Customer"
+                onChange={handleChange}
+              >
+                {owners.map((owner_it) => {
+                  return(
+                    <MenuItem id={owner_it._id} value={owner_it.owner}>{owner_it.owner}</MenuItem>
+                  )
+                })
+                }
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid container item xs={12} md={3} lg={3} alignItems="center" justifyContent="Left">
             <Grid item xs={12} md={5} lg={5}>
               <div>Order Operation Date</div>
@@ -145,7 +168,7 @@ const AddNew = ({ addOrder, getFactories, getCustomers, getOwners }) => {
               </LocalizationProvider>
             </Grid>
           </Grid>
-          <Grid container item xs={12} md={3} lg={3} alignItems="center" justifyContent="Left">
+          <Grid container item xs={12} md={2} lg={2} alignItems="center" justifyContent="Left">
             <Grid item xs={12} md={3} lg={3}>
               <div>Ready Date</div>
             </Grid>

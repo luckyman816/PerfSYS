@@ -23,8 +23,12 @@ router.post("/create", auth, async (req: AuthRequest, res: Response) => {
     orderPO: req.body.orderPO,
     factory: req.body.factory,
     customer: req.body.customer,
+    owner: req.body.owner,
     completionDate: req.body.completionDate,
-    readyDate: req.body.readyDate, 
+    readyDate: req.body.readyDate,
+    qScore: req.body.qScore,
+    cScore: req.body.cScore,
+    pScore: req.body.pScore 
   });
   try {
     const savedOrder = await order.save();
@@ -34,6 +38,7 @@ router.post("/create", auth, async (req: AuthRequest, res: Response) => {
       orderPO: req.body.orderPO,
       factory: req.body.factory,
       customer: req.body.customer,
+      owner: req.body.owner,
       completionDate: req.body.completionDate,
       readyDate: req.body.readyDate,
     });
@@ -43,11 +48,60 @@ router.post("/create", auth, async (req: AuthRequest, res: Response) => {
     res.status(400).json({ msg: error });
   }
 });
+router.post("/addhistory/:orderId", auth, async (req: AuthRequest, res: Response) => {
+  console.log(req.user._id);
 
+  const orderHistory = new OrderHistory({
+    userId: new mongoose.Types.ObjectId(req.user._id),
+    orderId: req.params.orderId,
+    orderPO: req.body.orderPO,
+    factory: req.body.factory,
+    customer: req.body.customer,
+    owner: req.body.owner,
+    completionDate: req.body.completionDate,
+    readyDate: req.body.readyDate,
+  });
+  try {
+    await orderHistory.save();
+    res.json(orderHistory);
+  } catch (error) {
+    res.status(400).json({ msg: error });
+  }
+});
 router.get("/:userid", auth, async (req: AuthRequest, res: Response) => {
   const orders = await Order.find({
     userId: req.params.userid,
   });
+  if (orders.length) {
+    return res.json(orders);
+  } else if (!orders.length) {
+    res.status(204).json({ msg: "Not Found Any Orders!" });
+  } else {
+    res.status(400).json({ msg: "You have no permission" });
+  }
+});
+router.get("/getScoreCustomer/:customer", auth, async (req: AuthRequest, res: Response) => {
+  const orders = await Order.find({customer: req.params.customer });
+  if (orders.length) {
+    return res.json(orders);
+  } else if (!orders.length) {
+    res.status(204).json({ msg: "Not Found Any Orders!" });
+  } else {
+    res.status(400).json({ msg: "You have no permission" });
+  }
+});
+router.get("/getScoreFactory/:factory", auth, async (req: AuthRequest, res: Response) => {
+  const orders = await Order.find({factory: req.params.factory });
+  if (orders.length) {
+    return res.json(orders);
+  } else if (!orders.length) {
+    res.status(204).json({ msg: "Not Found Any Orders!" });
+  } else {
+    res.status(400).json({ msg: "You have no permission" });
+  }
+});
+router.get("/getScoreOwner/:owner", auth, async (req: AuthRequest, res: Response) => {
+  const orders = await Order.find({owner: req.params.owner });
   if (orders.length) {
     return res.json(orders);
   } else if (!orders.length) {
@@ -82,6 +136,7 @@ router.put("/:orderId", auth, async (req: AuthRequest, res: Response) => {
     orderPO: order.orderPO,
     factory: req.body.factory,
     customer: req.body.customer,
+    owner: req.body.owner,
     completionDate: req.body.completionDate,
     readyDate: req.body.readyDate,
   };
@@ -95,7 +150,25 @@ router.put("/:orderId", auth, async (req: AuthRequest, res: Response) => {
     return res.json({ msg: "Not found!" });
   }
 });
-
+router.put("/complete/:orderId/:userId", auth, async (req: AuthRequest, res: Response) => {
+  const order = await Order.findById(req.params.orderId);
+  const completeOrder = {
+    _id: req.params.orderId,
+    qScore: req.body.qScore,
+    cScore: req.body.cScore,
+    pScore: req.body.pScore
+  };
+  if (order) {
+    await Order.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(req.params.orderId) },
+      completeOrder
+    );
+    const updatedOrders = await Order.find({userId: req.params.userId})
+    return res.json(updatedOrders);
+  } else {
+    return res.json({ msg: "Not found!" });
+  }
+});
 router.delete("/:orderId", auth, async (req: AuthRequest, res: Response) => {
   const order = await Order.findById(req.params.orderId);
   console.log(req.params.orderId);
@@ -106,14 +179,6 @@ router.delete("/:orderId", auth, async (req: AuthRequest, res: Response) => {
   }
   await Order.deleteOne({ _id: req.params.orderId });
   await res.json({ msg: "Order has been deleted successfully!" });
-});
-
-router.get("/orders", auth, async (req: AuthRequest, res: Response) => {
-  const allOrders = await Order.find()
-    .sort("orderPO")
-    .sort("factory")
-    .sort("customer");
-  res.json(allOrders);
 });
 
 export default router;

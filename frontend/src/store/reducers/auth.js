@@ -7,15 +7,17 @@ import {
     //LOGIN_FAIL,
     LOGOUT,
     ACCOUNT_DELETED,
-    GET_USERS
+    GET_USERS,
+    SET_LANGUAGE
   } from '../../actions/types';
   
   const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     loading: true,
-    user: null,
-    users: []
+    user: [],
+    users: [],
+    language: 'English'
   };
   function authReducer(state = initialState, action) {
     const { type, payload } = action;
@@ -26,16 +28,22 @@ import {
           ...state,
           isAuthenticated: true,
           loading: false,
-          user: payload
+          user: payload.user
         };
       case REGISTER_SUCCESS:
       case LOGIN_SUCCESS:
         return {
           ...state,
           ...payload,
+          user: payload.user,
           isAuthenticated: true,
           loading: true
         };
+      case SET_LANGUAGE:
+        return {
+          ...state,
+          language: payload
+        }
       case ACCOUNT_DELETED:
       case GET_USERS:
         return {
@@ -51,7 +59,7 @@ import {
           token: null,
           isAuthenticated: false,
           loading: false,
-          user: null
+          user: []
         };
       default:
         return state;

@@ -39,7 +39,7 @@ const DashboardDefault = () => {
   return (
     <>
       <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-        <Grid item xs={12} md={4} lg={12}>
+        <Grid item xs={12} md={12} lg={12}>
           <MainCard sx={{ mt: 2 }} content={false}>
             <Typography variant="h4" color="textSecondary" style={{ marginLeft: '10px' }}>
               <div

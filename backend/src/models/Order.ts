@@ -13,6 +13,10 @@ const OrderSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  owner: {
+    type: String,
+    required: true,
+  },
   factory: {
     type: String,
     required: true,
@@ -24,6 +28,15 @@ const OrderSchema: Schema = new Schema({
   readyDate: {
     type: Date,
     default: Date.now
+  },
+  qScore: {
+    type: String
+  },
+  cScore: {
+    type: String
+  },
+  pScore: {
+    type: String
   }
 });
 const Order = model("Order", OrderSchema);

@@ -3,7 +3,7 @@ import { setAlert } from './alert';
 import { GET_CUSTOMERS, ADD_CUSTOMER, DELETE_CUSTOMER, CUSTOMER_ERROR} from './types';
 export const getCustomers = () => async (dispatch) => {
     try {
-      const res = await api.get('customer/all');
+      const res = await api.get('/customer/all');
       console.log('----------------response get', res.data);
       dispatch({
         type: GET_CUSTOMERS,
@@ -35,7 +35,6 @@ export const getCustomers = () => async (dispatch) => {
   };
   export const addCustomer = (customerData) => async (dispatch) => {
     try {
-      console.log("ffffffffffffff",customerData)
       const res = await api.post('/customer/add', customerData);
       
       dispatch({

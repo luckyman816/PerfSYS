@@ -71,7 +71,7 @@ const AuthRegister = ({setAlert, register, isAuthenticated}) => {
     setAlert('Sign up successfully!','success')
   }
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/customerManage" />;
   }
   return (
     <>

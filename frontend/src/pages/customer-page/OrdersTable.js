@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-// import { format } from 'date-fns';
+//--------------Dialog---------------//
 import ShowAddDialog from './ShowAddDialog';
 import ShowHistoryDialog from './ShowHistoryDialog';
 import ShowUpdateDialog from './ShowUpdateDialog';
+import ShowCompletionDialog from './ShowCompletionDialog';
 // material-ui
 import { Box, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Tooltip } from '@mui/material';
 // third-party
@@ -18,6 +19,9 @@ import { getOrdersHistory } from 'actions/order_history';
 import { deleteOrder } from 'actions/order';
 import { useSelector } from 'react-redux';
 import { updateOrder } from 'actions/order';
+import { updateScore } from 'actions/order';
+import { addOrderHistory } from 'actions/order_history';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
 
 // project import
 
@@ -60,6 +64,12 @@ const headCells = [
     label: 'Order PO#'
   },
   {
+    id: 'status',
+    align: 'center',
+    disablePadding: false,
+    label: 'Status'
+  },
+  {
     id: 'customer',
     align: 'center',
     disablePadding: true,
@@ -70,6 +80,12 @@ const headCells = [
     align: 'center',
     disablePadding: false,
     label: 'Factory'
+  },
+  {
+    id: 'owner',
+    align: 'center',
+    disablePadding: false,
+    label: 'Owner'
   },
   {
     id: 'orderCompletionDate',
@@ -118,74 +134,86 @@ OrderTableHead.propTypes = {
 };
 
 // ==============================|| ORDER TABLE ||============================== //
-const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) => {
+const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder, updateScore, addOrderHistory }) => {
   const [open_d, setOpen_d] = React.useState(false);
   const [open_h, setOpen_h] = React.useState(false);
   const [open_u, setOpen_u] = React.useState(false);
+  const [open_c, setOpen_c] = React.useState(false);
   const [updateId, setUpdateId] = React.useState('');
 
   const [orderID, setOrderID] = React.useState();
+  const [userId, setUserId] = React.useState();
   const [orderHistory, setOrderHistory] = React.useState();
   const [orders, setOrders] = React.useState([]);
+  const [order, setOrder] = React.useState([]);
+  // -----------Delete Order--------------//
   const handleClickOpen_d = (orderID) => {
     setOpen_d(true);
     setOrderID(orderID);
-    // console.log('aaa________', orderID);
   };
-  const handleClickOpen_h = (orderID) => {
-    setOpen_h(true);
-    // setOrderID(orderID);
-    console.log('aaa________', orderID);
-  };
-  const handleClickOpen_u = (orderID) => {
-    setUpdateId(orderID);
-    setOpen_u(true);
-    // setOrderID(orderID);
-    console.log('aaa________', orderID);
-  };
-
   const handleClose_d = () => {
     setOpen_d(false);
+  };
+  //--------------Open History Dialog-----------//
+  const handleClickOpen_h = (orderID) => {
+    setOpen_h(true);
+    console.log('aaa________', orderID);
   };
   const handleClose_h = () => {
     setOpen_h(false);
   };
+  //--------------Open Update dialog-----------//
+  const handleClickOpen_u = (orderID, order) => {
+    setUpdateId(orderID);
+    setOrder(order);
+    setOpen_u(true);
+  };
   const handleClose_u = () => {
     setOpen_u(false);
   };
-
+  //--------------Open Complete dialog-----------//
+  const handleClickOpen_c = (orderID, userID) => {
+    setOrderID(orderID);
+    setUserId(userID);
+    setOpen_c(true);
+  };
+  const handleClose_c = () => {
+    setOpen_c(false);
+  };
+  // ------------------Get factory, customer or owner dropdown from redux----------------//
+  const factories = useSelector((state) => state.factory.factories);
+  const customers = useSelector((state) => state.customer.customers);
+  const owners = useSelector((state) => state.owner.owners);
   const userID = useSelector((state) => state.auth.user);
+  // ---------------Get orders history from redux -----------------//
   const ordershistory = useSelector((state) => state.ordershistory.orders_history);
+  //------------------Get orders from redux------------//
   const orders_state = useSelector((state) => state.order.orders);
 
   const onClickTableRow = async (id) => {
     console.log('------', id);
     await getOrdersHistory(id);
-    // setOrderHistory(ordershistory);
-
     handleClickOpen_h(id);
   };
-
+  //----------------Get Orders History------------//
   useEffect(() => {
     if (ordershistory) {
-      // console.log('xxxxxxxxxxxxxxx', orderHistory);
       setOrderHistory(ordershistory);
     }
   }, [ordershistory]);
-
+  //------------------Get Orders---------------//
   useEffect(() => {
     if (orders_state) {
-      console.log('xxxxxxxxxxxxxxx', orders_state);
       setOrders(orders_state);
     }
-  }, [orders_state, updateOrder]);
+  }, [orders_state, updateOrder, updateScore]);
 
   useEffect(() => {
-    if (userID && userID.user) {
-      getOrders(userID.user._id);
+    if (userID) {
+      getOrders(userID._id);
     }
-  }, [getOrders, userID, updateOrder]);
-  // console.log('aaaaaaaaa', orders);
+  }, [getOrders, userID, updateOrder, updateScore]);
+  //-----------------Delete Order-------------//
   const handleOk = () => {
     deleteOrder(orderID);
     handleClose_d();
@@ -195,7 +223,6 @@ const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) =
   const [orderBy] = useState('trackingNo');
   const [selected] = useState([]);
   const isSelected = (trackingNo) => selected.indexOf(trackingNo) !== -1;
-
   return (
     <Box>
       <TableContainer
@@ -242,8 +269,18 @@ const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) =
                         {order.orderPO}
                       </Link>
                     </TableCell>
+                    <TableCell align="center">
+                      {
+                       order.qScore ? (
+                        <div style={{ backgroundColor: '#71eb34', width: 'auto', height: '20px', borderRadius: '5px', color:  'white' }}>completed</div>
+                      ) : (
+                        <div style={{ backgroundColor: '#eb3734', width: 'auto', height: '20px', borderRadius: '5px', color:  'white' }}>not completed</div>
+                      )
+                      }
+                    </TableCell>
                     <TableCell align="center">{order.factory}</TableCell>
                     <TableCell align="center">{order.customer}</TableCell>
+                    <TableCell align="center">{order.owner}</TableCell>
                     <TableCell align="center">{order.completionDate?.split('T')[0]}</TableCell>
                     <TableCell align="center">{order.readyDate?.split('T')[0]}</TableCell>
                     <TableCell align="center">
@@ -253,13 +290,18 @@ const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) =
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Update Order">
-                        <IconButton color="primary" onClick={() => handleClickOpen_u(order._id)}>
+                        <IconButton color="primary" onClick={() => handleClickOpen_u(order._id, order)}>
                           <BorderColorIcon />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete Order">
                         <IconButton color="error" onClick={() => handleClickOpen_d(order._id)}>
                           <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Completion Order">
+                        <IconButton color="success" onClick={() => handleClickOpen_c(order._id, order.userId)}>
+                          <FactCheckIcon />
                         </IconButton>
                       </Tooltip>
                     </TableCell>
@@ -286,10 +328,23 @@ const OrderTable = ({ getOrders, deleteOrder, getOrdersHistory, updateOrder }) =
       <ShowUpdateDialog
         open={open_u}
         id={updateId}
+        order={order}
         updateOrder={updateOrder}
+        addOrderHistory={addOrderHistory}
+        factories={factories}
+        customers={customers}
+        owners={owners}
         handleClickOpen={handleClickOpen_u}
         handleClose={handleClose_u}
         content={deleteletter}
+      />
+      <ShowCompletionDialog
+        open = {open_c}
+        id = {orderID}
+        userId = {userId}
+        updateScore={updateScore}
+        handleClickOpen={handleClickOpen_c}
+        handleClose={handleClose_c}
       />
     </Box>
   );
@@ -299,9 +354,13 @@ OrderTable.propTypes = {
   deleteOrder: PropTypes.func.isRequired,
   getOrdersHistory: PropTypes.func.isRequired,
   updateOrder: PropTypes.func.isRequired,
+  updateScore: PropTypes.func.isRequired,
+  addOrderHistory: PropTypes.func.isRequired,
   order: PropTypes.object.isRequired
 };
 const mapStateToProps = (state) => ({
   order: state.order
 });
-export default connect(mapStateToProps, { getOrders, getOrdersHistory, deleteOrder, updateOrder })(OrderTable);
+export default connect(mapStateToProps, { getOrders, getOrdersHistory, deleteOrder, updateOrder, updateScore, addOrderHistory })(
+  OrderTable
+);

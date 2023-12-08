@@ -10,6 +10,7 @@ import factory from './factory';
 import customer from './customer';
 import owner from './owner'
 import ordershistory from './order_history'
+import satistics from './satistics';
 
 // ==============================|| COMBINE REDUCERS ||============================== //
 
@@ -21,6 +22,7 @@ export default combineReducers({
     factory,
     customer,
     owner,
-    ordershistory
+    ordershistory,
+    satistics
 });
 

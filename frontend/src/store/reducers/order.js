@@ -1,8 +1,11 @@
-import { GET_ORDERS, ORDER_ERROR, UPDATE_ORDER, DELETE_ORDER, ADD_ORDER, GET_ORDER } from '../../actions/types';
+import { GET_ORDERS, ORDER_ERROR, UPDATE_ORDER, DELETE_ORDER, ADD_ORDER, GET_ORDER, GET_SCORE_CUSTOMER, GET_SCORE_FACTORY, GET_SCORE_OWNER, COMPLETE_ORDER } from '../../actions/types';
 
 const initialState = {
-  orders: [''],
+  orders: [],
   order: null,
+  score_customer: [],
+  score_factory: [],
+  score_owner : [],
   loading: true,
   error: {}
 };
@@ -29,12 +32,36 @@ function orderReducer(state = initialState, action) {
         orders: [payload, ...state.orders],
         loading: false
       };
+    case GET_SCORE_CUSTOMER:
+      return {
+        ...state,
+        score_customer: payload,
+        loading: false
+      }
+    case GET_SCORE_FACTORY:
+      return {
+        ...state,
+        score_factory: payload,
+        loading: false
+      }
+    case GET_SCORE_OWNER:
+      return {
+        ...state,
+        score_owner: payload,
+        loading: false
+      }
     case DELETE_ORDER:
       return {
         ...state,
         orders: state.orders.filter((order) => order._id !== payload),
         loading: false
       };
+    case COMPLETE_ORDER:
+      return {
+        ...state,
+        orders: payload,
+        loading: false
+      }
     case ORDER_ERROR:
       return {
         ...state,

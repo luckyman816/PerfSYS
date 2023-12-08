@@ -21,6 +21,10 @@ const OrderSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  owner : {
+    type: String,
+    required: true,
+  },
   completionDate: {
     type: Date,
     default: Date.now,

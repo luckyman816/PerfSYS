@@ -52,15 +52,17 @@ const AdminTable = ({getUsers}) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((user) => (
-            <StyledTableRow key={user._id}>
-              <StyledTableCell component="th" scope="row">
-                {user.firstname}
-              </StyledTableCell>
-              <StyledTableCell align="center">{user.lastname}</StyledTableCell>
-              <StyledTableCell align="center">{user.email}</StyledTableCell>
-              <StyledTableCell align="center">{user.company}</StyledTableCell>
-            </StyledTableRow>
+          {Array.isArray(users) &&
+              users.length > 0 &&
+              users.map((user) => (
+              <StyledTableRow key={user._id}>
+                <StyledTableCell component="th" scope="row">
+                  {user.firstname}
+                </StyledTableCell>
+                <StyledTableCell align="center">{user.lastname}</StyledTableCell>
+                <StyledTableCell align="center">{user.email}</StyledTableCell>
+                <StyledTableCell align="center">{user.company}</StyledTableCell>
+              </StyledTableRow>
           ))}
         </TableBody>
       </Table>

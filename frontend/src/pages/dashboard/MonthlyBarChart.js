@@ -25,7 +25,7 @@ const barChartOptions = {
     enabled: false
   },
   xaxis: {
-    categories: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+    categories: [''],
     axisBorder: {
       show: false
     },
@@ -34,7 +34,7 @@ const barChartOptions = {
     }
   },
   yaxis: {
-    show: false
+    show: true
   },
   grid: {
     show: false
@@ -43,28 +43,29 @@ const barChartOptions = {
 
 // ==============================|| MONTHLY BAR CHART ||============================== //
 
-const MonthlyBarChart = () => {
+const MonthlyBarChart = (props) => {
+  console.log('')
   const theme = useTheme();
-
   const { primary, secondary } = theme.palette.text;
   const info = theme.palette.info.light;
-
-  const [series] = useState([
+  const [series, setSeriousS] = useState([
     {
-      data: [80, 95, 70, 42, 65, 55, 78]
+      data: [0, 0, 0]
     }
   ]);
-
+  useEffect(() => {
+    setSeriousS([{data: [props.qScore, props.cScore, props.pScore]}])
+  }, [props.qScore])
   const [options, setOptions] = useState(barChartOptions);
-
   useEffect(() => {
     setOptions((prevState) => ({
       ...prevState,
       colors: [info],
       xaxis: {
+        categories: ['QC Score', 'Claim Score', 'Process Score'],
         labels: {
           style: {
-            colors: [secondary, secondary, secondary, secondary, secondary, secondary, secondary]
+            colors: [info, secondary, secondary, secondary, secondary, secondary, secondary]
           }
         }
       },
@@ -74,12 +75,12 @@ const MonthlyBarChart = () => {
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [primary, info, secondary]);
-
+  // barChartOptions.xaxis.categories = 
   return (
     <div id="chart">
+      {series.data}
       <ReactApexChart options={options} series={series} type="bar" height={365} />
     </div>
   );
 };
-
 export default MonthlyBarChart;

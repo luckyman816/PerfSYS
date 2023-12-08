@@ -1,4 +1,4 @@
-import { GET_ORDER_HISTORY, GET_ORDERS_HISTORY } from '../../actions/types';
+import { ADD_ORDER_HISTORY, GET_ORDERS_HISTORY } from '../../actions/types';
 const initialState = {
   orders_history: [''],
   order_history: null,
@@ -15,12 +15,12 @@ function order_history(state = initialState, action) {
           orders_history: payload,
           loading: false
         };
-      case GET_ORDER_HISTORY:
+      case ADD_ORDER_HISTORY:
         return {
           ...state,
-          order_history: payload,
+          orders_history: [payload, ...state.orders_history],
           loading: false
-        };
+        }
         default:
          return state;
     }

@@ -6,8 +6,7 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
   LineChartOutlined
-} from '@ant-design/icons';
-
+} from '@ant-design/icons'; 
 // icons
 const icons = {
   UserOutlined,
@@ -21,13 +20,13 @@ const icons = {
 // ==============================|| MENU ITEMS - UTILITIES ||============================== //
 
 const utilities = {
-  id: 'management',
-  title: 'Management',
-  type: 'group',
+  id: 'management_a',
+  title: 'AdminManagement',
+  type: 'admin',
   children: [
     {
       id: 'util-admin',
-      title: 'Admin',
+      title : 'Admin',
       type: 'item',
       url: '/adminManage',
       icon: icons.UserOutlined

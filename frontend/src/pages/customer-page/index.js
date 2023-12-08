@@ -6,7 +6,6 @@ import { Grid,  } from '@mui/material';
 import MainCard from 'components/MainCard';
 // ==============================|| CUSTOMER PAGE ||============================== //
 const DashboardDefault = () => {
-
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       <Grid item xs={12} md={12} lg={12}>

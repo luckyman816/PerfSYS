@@ -10,25 +10,32 @@ const icons = {
 // ==============================|| MENU ITEMS - SAMPLE PAGE & DOCUMENTATION ||============================== //
 
 const support = {
-  id: 'support',
-  title: 'Support',
-  type: 'group',
+  id: 'management_c',
+  title: 'CustomerManagement',
+  type: 'customer',
   children: [
     {
-      id: 'sample-page',
-      title: 'Sample Page',
+      id: 'util-customer_c',
+      title: 'Customer',
       type: 'item',
-      url: '/sample-page',
-      icon: icons.ChromeOutlined
+      url: '/customerManage',
+      icon: icons.ShoppingCartOutlined
     },
     {
-      id: 'documentation',
-      title: 'Documentation',
+      id: 'util-chart_c',
+      title: 'Chart',
       type: 'item',
-      url: 'https://codedthemes.gitbook.io/mantis/',
-      icon: icons.QuestionOutlined,
-      external: true,
-      target: true
+      url: '/chart',
+      icon: icons.LineChartOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'ant-icons_c',
+      title: 'Ant Icons',
+      type: 'item',
+      url: '/icons/ant',
+      icon: icons.AntDesignOutlined,
+      breadcrumbs: false
     }
   ]
 };
